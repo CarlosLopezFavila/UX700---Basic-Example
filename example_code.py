@@ -1,6 +1,7 @@
 import ux700
 import json
 import time
+from iso_codes import ISO_CODES
 
 def menu():
     while True:
@@ -43,8 +44,19 @@ def process_option(option):
             
             if check_response(payment, "Payment"):
                 print(json.dumps(payment.json(), indent=4))
+                data = payment.json()
+                acquirer_code = data.get("payment", {}).get("acquirerResponseCode")
+                acquirer_message = data.get("payment", {}).get("acquirerResponseMessage")
+                auth_result = data.get("payment", {}).get("authResult", "")
+                print(f"Acquirer Code: {acquirer_code}\nAcquirer Message: {acquirer_message}\nAuth Result: {auth_result}")
+
+                try:
+                    print(ISO_CODES[acquirer_code])
+                except KeyError:
+                    print("Unknown Error. Please Contact Support")
+
             print()
-            time.sleep(1)
+            time.sleep(2)
         except ValueError:
             print("\nError: The amount should be a valid number. Try Again.\n")
             time.sleep(1)
