@@ -4,8 +4,8 @@ Defines every function to make a request to the payment terminal API.
 
 import requests as r
 
-# URL BASE: IP Direction of terminal UX700
-URL_BASE = "http://10.0.1.30:8421"
+# URL BASE: IP Address of terminal UX700
+URL_BASE = "http://10.0.1.4:8421"
 
 STATUS_ENDPOINT = "/avotechPayApi/v2/getStatus"
 DO_SALE_ENDPOINT = "/avotechPayApi/v2/doSale"
@@ -16,8 +16,8 @@ PRINT_ENDPOINT = "/avotechPayApi/v2/Print"
 CANCEL_ENDPOINT = "/avotechPayApi/v2/Void"
 SEND_HB = "/avotechPayApi/v2/SendHB"
 
-# Timeout for HTTP requests (seconds)
-TIMEOUT = 15
+# Timeout for HTTP requests (seconds)/Refund
+TIMEOUT = 30
 
 
 def status():
@@ -43,7 +43,7 @@ def do_sale(
 ):
     """Process a sale transaction."""
     payload = {
-        "storeId": "01-987654321-001",
+        "storeId": "01-987654321-001", #it must be changed depending on the store
         "amount": amount,
         "tip": tip,
         "currency": currency,
@@ -51,13 +51,14 @@ def do_sale(
         "promoMonths": promo_months,
         "promoDeferral": promo_deferral,
         "customer": None,
-        "reference": "I-93253093-J76",
+        "reference": "I-93253093-J76", #static for examples,but must be changed by the store on each sale
         "seller": "Kiosko7",
         "receiptType": receipt_type,
         "mobileNumber": mobile_number,
         "email": email
     }
-    return r.post(URL_BASE + DO_SALE_ENDPOINT, json=payload, timeout=TIMEOUT)
+    #TPV Internal timeout = 30, so  the request timeout should be more or equal to 30
+    return r.post(URL_BASE + DO_SALE_ENDPOINT, json=payload,timeout=60)
 
 
 def last_txn():
@@ -66,7 +67,7 @@ def last_txn():
 
 
 def refund(
-    amount=0,
+    original_amount=0,
     refund_amount=0,
     original_system_trace_audit_number=569874236528,
     receipt_type=None,
@@ -75,8 +76,8 @@ def refund(
 ):
     """Process a refund."""
     payload = {
-        "originalAmount": amount,
-        "originalReference": "I-93253093-J76",
+        "originalAmount": original_amount,
+        "originalReference": "I-93253093-J76", #static for examples,but must be changed by the store on each sale
         "originalsystemTraceAuditNumber": original_system_trace_audit_number,
         "refundAmount": refund_amount,
         "receiptType": receipt_type,
@@ -95,7 +96,7 @@ def print_receipt(
 ):
     """Print a receipt."""
     payload = {
-        "originalReference": "I-93253093-J76",
+        "originalReference": "I-93253093-J76", #static for examples,but must be changed by the store on each sale
         "originalsystemTraceAuditNumber": original_system_trace_audit_number,
         "lastTxn": last_transaction,
         "receiptType": receipt_type,
@@ -115,7 +116,7 @@ def cancel_sale(
     """Cancel a sale."""
     payload = {
         "originalAmount": amount,
-        "originalReference": "I-93253093-J76",
+        "originalReference": "I-93253093-J76", #static for examples,but must be changed by the store on each sale
         "originalsystemTraceAuditNumber": 569874236528,
         "lastTxn": last_transaction,
         "receiptType": receipt_type,
