@@ -58,7 +58,7 @@ def do_sale(
         "email": email
     }
     #TPV Internal timeout = 30, so  the request timeout should be more or equal to 30
-    return r.post(URL_BASE + DO_SALE_ENDPOINT, json=payload,timeout=60)
+    return r.post(URL_BASE + DO_SALE_ENDPOINT, json=payload,timeout=40)
 
 
 def last_txn():
