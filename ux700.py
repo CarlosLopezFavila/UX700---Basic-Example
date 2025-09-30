@@ -1,7 +1,7 @@
 """
 Defines every function to make a request to the payment terminal API.
 """
-
+from json import dumps
 import requests as r
 
 # URL BASE: IP Address of terminal UX700
@@ -16,7 +16,7 @@ PRINT_ENDPOINT = "/avotechPayApi/v2/Print"
 CANCEL_ENDPOINT = "/avotechPayApi/v2/Void"
 SEND_HB = "/avotechPayApi/v2/SendHB"
 
-# Timeout for HTTP requests (seconds)/Refund
+# Timeout for HTTP requests (seconds)
 TIMEOUT = 30
 
 
@@ -57,8 +57,11 @@ def do_sale(
         "mobileNumber": mobile_number,
         "email": email
     }
+    
+    print("Payload Sent:")
+    print(dumps(payload, indent=4))
     #TPV Internal timeout = 30, so  the request timeout should be more or equal to 30
-    return r.post(URL_BASE + DO_SALE_ENDPOINT, json=payload,timeout=40)
+    return r.post(URL_BASE + DO_SALE_ENDPOINT, json=payload,timeout=60)
 
 
 def last_txn():
@@ -84,6 +87,9 @@ def refund(
         "mobileNumber": mobile_number,
         "email": email
     }
+    
+    print("Payload Sent:")
+    print(dumps(payload, indent=4))
     return r.post(URL_BASE + REFUND_ENDPOINT, json=payload, timeout=TIMEOUT)
 
 
@@ -103,6 +109,9 @@ def print_receipt(
         "mobileNumber": mobile_number,
         "email": email
     }
+    
+    print("Payload Sent:")
+    print(dumps(payload, indent=4))
     return r.post(URL_BASE + PRINT_ENDPOINT, json=payload, timeout=TIMEOUT)
 
 
@@ -123,6 +132,9 @@ def cancel_sale(
         "mobileNumber": mobile_number,
         "email": email
     }
+    
+    print("Payload Sent:")
+    print(dumps(payload, indent=4))
     return r.post(URL_BASE + CANCEL_ENDPOINT, json=payload, timeout=TIMEOUT)
 
 def send_hb():
